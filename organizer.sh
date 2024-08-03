@@ -34,7 +34,7 @@ function organize_files() {
     local FILE="$3"
 
     case "$EXT" in
-        pdf|PDF|jpg|JPG|txt|TXT)
+        pdf|jpg|txt)
             ;;
         *)
             EXT="misc"
