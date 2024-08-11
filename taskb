@@ -1,0 +1,74 @@
+#!/usr/bin/bash
+##################################################
+# Description: script
+#   input: <>
+#   output: <>
+#   Author: <>
+##################################################
+
+
+
+##################################################
+# Define functions ---> Verbs (Requirments).
+#################################################
+
+
+function get_p_info () 
+{
+    declare PROCESS
+    read PROCESS
+    if pgrep -x "${PROCESS}" > /dev/null; then
+    declare PID=$(pgrep -x "${PROCESS}")
+    declare PPID=$(ps -o ppid= -p "${PID}")
+    declare p_info=$(ps -p "${PID}" -o user,%cpu,%mem)
+    echo   "${p_info}" PPID: "${PPID}" PID : "${PID}"
+    else
+    echo "no such process is running"
+    fi
+}
+function kill_process () 
+{
+    declare ID
+    read ID
+    if ps -p "${ID}" > /dev/null; then
+    kill "${ID}"
+    else
+    echo "no such process is running"
+    fi
+}
+function system_processes () 
+{
+    declare TOTAL_PROCESSES=$(top -b -n 1 | grep Tasks:)
+    declare MEMORY=$(top -b -n 1 | grep used,)
+    declare CPU_LOAD=$(top -b -n 1 | grep "%Cpu(s):")   
+    echo "total tasks: " "${TOTAL_PROCESSES: 7:3}"
+    echo "memory usage: " "${MEMORY}"    
+    echo "cpu load: " "${CPU_LOAD}"
+}
+
+
+function main()
+{
+    echo "Select an option:"
+select op in "Process_information" "kill_process" "system_process" "exit" ; do
+    case "$op" in
+        Process_information)
+            get_p_info 
+            ;;
+        kill_process)
+            kill_process 
+            ;;
+        system_process)
+            system_processes
+            ;;
+        exit)
+            exit 0
+            ;;
+        *)
+            echo "Wrong entry"
+            ;;
+    esac
+done
+}
+
+main 
